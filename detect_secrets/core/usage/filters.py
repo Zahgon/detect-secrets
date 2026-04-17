@@ -88,29 +88,7 @@ def _add_custom_filters(parser: argparse._ArgumentGroup) -> None:
         #   - detect_secrets.filters.common.is_invalid_file (python import path)
         #   - testing/custom_filters.py::is_invalid_secret (local file)
         #   - file://testing/custom_filters.py::is_invalid_secret (local file)
-        parts = urlparse(path)
-        if not parts.scheme and '::' in path:
-            # This could be a local file, without the file schema.
-            path = 'file://' + path
-            parts = urlparse(path)
-
-        if parts.scheme == 'file':
-            # May be local file.
-            # We do some initial pre-processing, but perform the file validation during the
-            # post-processing step.
-            components = parts.path.split('::')
-            if len(components) != 2:
-                raise argparse.ArgumentTypeError(
-                    'Did not specify function name for imported file.',
-                )
-
-            file_path = path[len('file://'):].split('::')[0]
-            if not os.path.isfile(file_path):
-                raise argparse.ArgumentTypeError(f'{file_path} is not a valid file.')
-        elif parts.scheme:
-            raise argparse.ArgumentTypeError(f'{path} is not a valid filter path.')
-
-        return path
+        pass
 
     parser.add_argument(
         '-f',

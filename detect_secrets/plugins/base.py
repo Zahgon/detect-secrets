@@ -52,36 +52,7 @@ class BasePlugin(metaclass=ABCMeta):
         **kwargs: Any
     ) -> Set[PotentialSecret]:
         """This examines a line and finds all possible secret values in it."""
-        output = set()
-        for match in self.analyze_string(line, **kwargs):
-            is_verified: bool = False
-            # If the filter is disabled it means --no-verify flag was passed
-            # We won't run verification in that case
-            if (
-                'detect_secrets.filters.common.is_ignored_due_to_verification_policies'
-                in get_settings().filters
-            ):
-                try:
-                    verified_result = call_function_with_arguments(
-                        self.verify,
-                        secret=match,
-                        context=context,
-                    )
-                    is_verified = True if verified_result == VerifiedResult.VERIFIED_TRUE else False
-                except requests.exceptions.RequestException:
-                    is_verified = False
-
-            output.add(
-                PotentialSecret(
-                    type=self.secret_type,
-                    filename=filename,
-                    secret=match,
-                    line_number=line_number,
-                    is_verified=is_verified,
-                ),
-            )
-
-        return output
+        pass
 
     def verify(self, secret: str) -> VerifiedResult:
         return VerifiedResult.UNVERIFIED
@@ -164,14 +135,7 @@ class RegexBasedDetector(BasePlugin, metaclass=ABCMeta):
         raise NotImplementedError
 
     def analyze_string(self, string: str) -> Generator[str, None, None]:
-        for regex in self.denylist:
-            for match in regex.findall(string):
-                if isinstance(match, tuple):
-                    for submatch in filter(bool, match):
-                        # It might make sense to paste break after yielding
-                        yield submatch
-                else:
-                    yield match
+        pass
 
     @staticmethod
     def build_assignment_regex(

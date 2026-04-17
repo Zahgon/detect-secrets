@@ -153,37 +153,20 @@ class LineGetter:
 
     @property
     def lines(self) -> List[str]:
-        if self._lines:
-            return self._lines
-
-        with self.open_file() as f:
-            lines = get_transformed_file(f, use_eager_transformers=self.use_eager_transformers)
-            self._lines = self.raw_lines if not lines else lines
-
-        return self._lines
+        pass
 
     @property
     def raw_lines(self) -> List[str]:
-        if self._raw_lines:
-            return self._raw_lines
-
-        with self.open_file() as f:
-            self._raw_lines = [line.rstrip() for line in f.readlines()]
-
-        return self._raw_lines
+        pass
 
     @property
     def has_cached_lines(self) -> bool:
-        return bool(self._lines)
+        pass
 
     @property
     def use_eager_transformers(self) -> bool:
-        return self._use_eager_transformers
+        pass
 
     @use_eager_transformers.setter
     def use_eager_transformers(self, status: bool) -> None:
-        if status == self.use_eager_transformers:
-            return
-
-        self._use_eager_transformers = status
-        self._lines = None              # invalidate cache
+        pass

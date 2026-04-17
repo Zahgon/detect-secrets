@@ -47,7 +47,7 @@ class SecretsCollection:
 
     @property
     def files(self) -> Set[str]:
-        return set(self.data.keys())
+        pass
 
     def scan_files(self, *filenames: str, num_processors: Optional[int] = None) -> None:
         """Just like scan_file, but optimized through parallel processing."""
@@ -80,14 +80,7 @@ class SecretsCollection:
         """
         :raises: UnidiffParseError
         """
-        try:
-            for secret in scan.scan_diff(diff):
-                self[secret.filename].add(secret)
-        except ImportError:     # pragma: no cover
-            raise NotImplementedError(
-                'SecretsCollection.scan_diff requires `unidiff` to work. Try pip '
-                'installing that package, and try again.',
-            )
+        pass
 
     def merge(self, old_results: 'SecretsCollection') -> None:
         """
@@ -315,4 +308,4 @@ class SecretsCollection:
 
 def _scan_file_and_serialize(filename: str) -> List[PotentialSecret]:
     """Used for multiprocessing, since lambdas can't be serialized."""
-    return list(scan.scan_file(filename))
+    pass

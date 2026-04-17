@@ -54,22 +54,12 @@ class PotentialSecret:
         self.fields_to_compare = ['filename', 'secret_hash', 'type']
 
     def set_secret(self, secret: str) -> None:
-        self.secret_hash: str = self.hash_secret(secret)
-
-        # Note: Originally, we never wanted to keep the secret value in memory,
-        #       after finding it in the codebase. However, to support verifiable
-        #       secrets (and avoid the pain of re-scanning again), we need to
-        #       keep the plaintext in memory as such.
-        #
-        #       This value should never appear in the baseline though, seeing that
-        #       we don't want to create a file that contains all plaintext secrets
-        #       in the repository.
-        self.secret_value: Optional[str] = secret
+        pass
 
     @staticmethod
     def hash_secret(secret: str) -> str:
         """This offers a way to coherently test this class, without mocking self.secret_hash."""
-        return hashlib.sha1(secret.encode('utf-8')).hexdigest()
+        pass
 
     @classmethod
     def load_secret_from_dict(cls, data: Dict[str, Union[str, int, bool]]) -> 'PotentialSecret':

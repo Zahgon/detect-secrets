@@ -24,42 +24,7 @@ class ParserBuilder:
         self.add_default_options()
 
     def add_default_options(self) -> 'ParserBuilder':
-        self._parser.add_argument(
-            '-v',
-            '--verbose',
-            action='count',
-            help='Verbose mode.',
-        )
-        self._parser.add_argument(
-            '--version',
-            action='version',
-            version=VERSION,
-            help='Display version information.',
-        )
-        self._parser.add_argument(
-            '-C',
-            metavar='<path>',
-            dest='custom_root',
-            nargs=1,
-            default=[''],
-            help=(
-                'Run as if detect-secrets was started in <path>, rather than in the current '
-                'working directory.'
-            ),
-        )
-        self._parser.add_argument(
-            '-c',
-            '--cores',
-            dest='num_cores',
-            nargs=1,
-            type=int,
-            default=[None],
-            help=(
-                'Specify the number of cores to use for parallel processing. Defaults to '
-                'using the max cores on the current host.'
-            ),
-        )
-        return self
+        pass
 
     def add_console_use_arguments(self) -> 'ParserBuilder':
         subparser = self._parser.add_subparsers(dest='action')
@@ -182,15 +147,11 @@ class ParserBuilder:
 
 
 def _assert_action_is_specified(args: argparse.Namespace) -> None:
-    if not args.action:
-        raise argparse.ArgumentTypeError('Unspecified action.')
+    pass
 
 
 def _action_specific_post_processor(action: str, processor: Callable) -> Callable:
     def wrapped(args: argparse.Namespace) -> None:
-        if args.action != action:
-            return
-
-        processor(args)
+        pass
 
     return wrapped

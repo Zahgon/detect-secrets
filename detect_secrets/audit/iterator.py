@@ -47,7 +47,7 @@ class BidirectionalIterator(Iterator):
         return result
 
     def next(self) -> Any:  # pragma: no cover
-        return self.__next__()
+        pass
 
     def step_back_on_next_iteration(self) -> None:
         self.step_back_once = True

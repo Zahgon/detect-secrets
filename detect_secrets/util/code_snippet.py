@@ -47,17 +47,15 @@ class CodeSnippet:
 
     @property
     def target_line(self) -> str:
-        return self.lines[self.target_index]
+        pass
 
     @target_line.setter
     def target_line(self, value: str) -> None:
-        self.lines[self.target_index] = value
+        pass
 
     @property
     def previous_line(self) -> str:
-        if self.target_index == 0 or len(self.lines) < self.target_index:
-            return ''
-        return self.lines[self.target_index - 1]
+        pass
 
     def add_line_numbers(self) -> 'CodeSnippet':
         for index, line in enumerate(self.lines):

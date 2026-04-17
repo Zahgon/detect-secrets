@@ -281,26 +281,7 @@ class KeywordDetector(BasePlugin):
         string: str,
         denylist_regex_to_group: Optional[Dict[Pattern, int]] = None,
     ) -> Generator[str, None, None]:
-        if self.keyword_exclude and self.keyword_exclude.search(string):
-            return
-
-        if denylist_regex_to_group is None:
-            attempts = [
-                QUOTES_REQUIRED_DENYLIST_REGEX_TO_GROUP,
-            ]
-        else:
-            attempts = [denylist_regex_to_group]
-
-        has_results = False
-        for denylist_regex_to_group in attempts:
-            for denylist_regex, group_number in denylist_regex_to_group.items():
-                match = denylist_regex.search(string)
-                if match:
-                    has_results = True
-                    yield match.group(group_number)
-
-            if has_results:
-                break
+        pass
 
     def analyze_line(
         self,
@@ -310,15 +291,7 @@ class KeywordDetector(BasePlugin):
         context: CodeSnippet = None,
         **kwargs: Any,
     ) -> Set[PotentialSecret]:
-        filetype = determine_file_type(filename)
-        denylist_regex_to_group = REGEX_BY_FILETYPE.get(filetype, QUOTES_REQUIRED_DENYLIST_REGEX_TO_GROUP)  # noqa: E501
-        return super().analyze_line(
-            filename=filename,
-            line=line,
-            line_number=line_number,
-            context=context,
-            denylist_regex_to_group=denylist_regex_to_group,
-        )
+        pass
 
     def json(self) -> Dict[str, Any]:
         return {

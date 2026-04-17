@@ -170,12 +170,7 @@ def scan_diff(diff: str) -> Generator[PotentialSecret, None, None]:
     """
     :raises: ImportError
     """
-    if not get_plugins():   # pragma: no cover
-        log.error('No plugins to scan with!')
-        return
-
-    for filename, lines in _get_lines_from_diff(diff):
-        yield from _process_line_based_plugins(lines, filename=filename)
+    pass
 
 
 def scan_for_allowlisted_secrets_in_file(filename: str) -> Generator[PotentialSecret, None, None]:
@@ -209,12 +204,7 @@ def scan_for_allowlisted_secrets_in_file(filename: str) -> Generator[PotentialSe
 
 
 def scan_for_allowlisted_secrets_in_diff(diff: str) -> Generator[PotentialSecret, None, None]:
-    if not get_plugins():   # pragma: no cover
-        log.error('No plugins to scan with!')
-        return
-
-    for filename, lines in _get_lines_from_diff(diff):
-        yield from _scan_for_allowlisted_secrets_in_lines(lines, filename)
+    pass
 
 
 def _scan_for_allowlisted_secrets_in_lines(
@@ -284,26 +274,7 @@ def _get_lines_from_diff(diff: str) -> Generator[Tuple[str, List[Tuple[int, str]
     """
     :raises: ImportError
     """
-    # Local imports, so that we don't need to require unidiff for versions of
-    # detect-secrets that don't use it.
-    from unidiff import PatchSet
-
-    patch_set = PatchSet.from_string(diff)
-    for patch_file in patch_set:
-        filename = patch_file.path
-        if _is_filtered_out(required_filter_parameters=['filename'], filename=filename):
-            continue
-
-        yield (
-            filename,
-            [
-                (line.target_line_no, line.value)
-                for chunk in patch_file
-                # target_lines refers to incoming (new) changes
-                for line in chunk.target_lines()
-                if line.is_added
-            ],
-        )
+    pass
 
 
 def _process_line_based_plugins(

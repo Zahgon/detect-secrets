@@ -31,15 +31,7 @@ class HighEntropyStringsPlugin(BasePlugin, metaclass=ABCMeta):
         self.regex = re.compile(r'([\'"])([{}]+)(\1)'.format(re.escape(charset)))
 
     def analyze_string(self, string: str) -> Generator[str, None, None]:
-        for result in self.regex.findall(string):
-            if isinstance(result, tuple):
-                # This occurs on the default regex, but not on the eager regex.
-                result = result[1]
-
-            # We perform the shannon entropy check in `analyze_line` instead, so that we have
-            # more control over **when** we display the results of this plugin. Specifically,
-            # this allows us to show the computed entropy values during adhoc string scans.
-            yield result
+        pass
 
     def analyze_line(
         self,
@@ -50,34 +42,7 @@ class HighEntropyStringsPlugin(BasePlugin, metaclass=ABCMeta):
         enable_eager_search: bool = False,
         **kwargs: Any,
     ) -> Set[PotentialSecret]:
-        output = super().analyze_line(
-            filename=filename,
-            line=line,
-            line_number=line_number,
-            context=context,
-        )
-        if output or not enable_eager_search:
-            # NOTE: We perform the limit filter at this layer (rather than analyze_string) so
-            # that we can surface secrets that do not meet the limit criteria when
-            # enable_eager_search=True.
-            return {
-                secret
-                for secret in (output or set())
-                if (
-                    self.calculate_shannon_entropy(cast(str, secret.secret_value)) >
-                    self.entropy_limit
-                )
-            }
-
-        # This is mainly used for adhoc string scanning. As such, it's just bad UX to require
-        # quotes around the expected secret. In these cases, we only try to search it without
-        # requiring quotes when we can't find any results *with* quotes.
-        #
-        # NOTE: Since we currently assume this is only used for adhoc string scanning, we
-        # perform the limit filtering outside this function. This allows us to see *why* secrets
-        # have failed to be caught with our configured limit.
-        with self.non_quoted_string_regex(is_exact_match=False):
-            return super().analyze_line(filename=filename, line=line, line_number=line_number)
+        pass
 
     def calculate_shannon_entropy(self, data: str) -> float:
         """Returns the entropy of a given string.
@@ -123,18 +88,7 @@ class HighEntropyStringsPlugin(BasePlugin, metaclass=ABCMeta):
             However, if the secret is part of a line of text, and you want to find the
             secret within the line, use False.
         """
-        old_regex = self.regex
-
-        regex_alternative = r'([{}]+)'.format(re.escape(self.charset))
-        if is_exact_match:
-            regex_alternative = r'^' + regex_alternative + r'$'
-
-        self.regex = re.compile(regex_alternative)
-
-        try:
-            yield
-        finally:
-            self.regex = old_regex
+        pass
 
 
 class Base64HighEntropyString(HighEntropyStringsPlugin):

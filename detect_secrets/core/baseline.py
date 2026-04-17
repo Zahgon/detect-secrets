@@ -137,11 +137,6 @@ def upgrade(baseline: Dict[str, Any]) -> Dict[str, Any]:
 def _is_relevant_upgrade_module(current_version: Version) -> Callable:
     def wrapped(module_path: str) -> bool:
         # This converts `v1_0` to `1.0`
-        affected_version_string = module_path.rsplit('.', 1)[-1].lstrip('v').replace('_', '.')
-
-        # Patch version doesn't matter, because patches should not require baseline bumps.
-        affected_version = Version(f'{affected_version_string}.0')
-
-        return current_version < affected_version
+        pass
 
     return wrapped

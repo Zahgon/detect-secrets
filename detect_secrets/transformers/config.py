@@ -133,73 +133,7 @@ class IniFileParser:
             ...     value1
             ...     value2
         """
-        values_list = _construct_values_list(values)
-        if not values_list:
-            return []
-
-        current_value_list_index = 0
-        output = []
-
-        for line_offset, line in enumerate(self.lines):
-            # Check 'pragma: allowlist nextline secret' comment on a single line
-            # The IniFileParser strips out comments however it is important to
-            # persist this speific comment type so filtering works properly.
-            if _is_allowlist_nextline_secret_comment(line):
-                output.append((
-                    line,
-                    self.line_offset + line_offset + 1,
-                ))
-                continue
-
-            # Check ignored lines before checking values, because
-            # you can write comments *after* the value.
-            if not line or self._comment_regex.match(line):
-                continue
-
-            # The first line is special because it's the only one with the variable name.
-            # As such, we should handle it differently.
-            if current_value_list_index == 0:
-                # In situations where the first line does not have an associated value,
-                # it will be an empty string. However, this regex still does its job because
-                # it's not necessarily the case where the first line is a non-empty one.
-                #
-                # Therefore, we *only* advance the current_value_list_index when we identify
-                # the key used.
-                first_line_regex = re.compile(
-                    r'^\s*{key}[ :=]+{value}'.format(
-                        key=re.escape(key),
-                        value=re.escape(values_list[current_value_list_index]),
-                    ),
-                )
-                if first_line_regex.match(line):
-                    output.append((
-                        values_list[current_value_list_index],
-                        self.line_offset + line_offset + 1,
-                    ))
-                    current_value_list_index += 1
-
-                continue
-
-            # There's no more values to iterate over.
-            if current_value_list_index == len(values_list):
-                if line_offset == 0:
-                    line_offset = 1  # Don't want to count the same line again
-
-                self.line_offset += line_offset
-                self.lines = self.lines[line_offset:]
-
-                break
-
-            # This handles all other cases, when it isn't an empty or blank line.
-            output.append((
-                values_list[current_value_list_index],
-                self.line_offset + line_offset + 1,
-            ))
-            current_value_list_index += 1
-        else:
-            self.lines = []
-
-        return output
+        pass
 
 
 def _construct_values_list(values: str) -> List[str]:
@@ -226,10 +160,7 @@ def _construct_values_list(values: str) -> List[str]:
         2. For all other values, ignore blank lines.
     Then, we can parse through, and look for values only.
     """
-    lines = values.splitlines()
-    values_list = lines[:1]
-    values_list.extend(filter(None, lines[1:]))
-    return values_list
+    pass
 
 
 def _is_allowlist_nextline_secret_comment(line: str) -> bool:

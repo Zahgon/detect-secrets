@@ -70,7 +70,7 @@ def find_access_key_id(context: CodeSnippet) -> List[str]:
 
 
 def hash(key: bytes, msg: str) -> bytes:
-    return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
+    pass
 
 
 def createSignatureKey(key: str, datestamp: str, region: str, service: str) -> bytes:

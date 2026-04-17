@@ -10,65 +10,20 @@ from detect_secrets.plugins.base import RegexBasedDetector
 
 
 def is_sequential_string(secret: str) -> bool:
-    sequences = (
-        # Base64 letters first
-        (
-            string.ascii_uppercase +
-            string.ascii_uppercase +
-            string.digits +
-            '+/'
-        ),
-
-        # Base64 numbers first
-        (
-            string.digits +
-            string.ascii_uppercase +
-            string.ascii_uppercase +
-            '+/'
-        ),
-
-        # We don't have a specific sequence for alphabetical
-        # sequences, since those will happen to be caught by the
-        # base64 checks.
-
-        # Alphanumeric sequences
-        (string.digits + string.ascii_uppercase) * 2,
-
-        # Capturing any number sequences
-        string.digits * 2,
-
-        string.hexdigits.upper() + string.hexdigits.upper(),
-        string.ascii_uppercase + '=/',
-    )
-
-    uppercase = secret.upper()
-    for sequential_string in sequences:
-        if uppercase in sequential_string:
-            return True
-
-    return False
+    pass
 
 
 def is_potential_uuid(secret: str) -> bool:
-    return bool(_get_uuid_regex().search(secret))
+    pass
 
 
 @lru_cache(maxsize=1)
 def _get_uuid_regex() -> Pattern:
-    return re.compile(
-        r'[a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12}',
-        re.IGNORECASE,
-    )
+    pass
 
 
 def is_likely_id_string(secret: str, line: str, plugin: Optional[BasePlugin] = None) -> bool:
-    try:
-        index = line.index(secret)
-    except ValueError:
-        return False
-
-    return (not plugin or not isinstance(plugin, RegexBasedDetector)) \
-        and bool(_get_id_detector_regex().search(line, pos=0, endpos=index))
+    pass
 
 
 @lru_cache(maxsize=1)
@@ -80,12 +35,11 @@ def _get_id_detector_regex() -> Pattern:
     s?                -> Optional plural id identifier
     [^a-z0-9]         -> Non-letter/numeric character
     """
-    return re.compile(r'(^(id|myid|userid)|_id)s?[^a-z0-9]', re.IGNORECASE)
+    pass
 
 
 def is_non_text_file(filename: str) -> bool:
-    _, ext = os.path.splitext(filename)
-    return ext in IGNORED_FILE_EXTENSIONS
+    pass
 
 
 # We don't scan files with these extensions.
@@ -144,19 +98,7 @@ def is_templated_secret(secret: str) -> bool:
     """
     Filters secrets that are shaped like: {secret}, <secret>, or ${secret}.
     """
-    try:
-        if (
-            (secret[0] == '{' and secret[-1] == '}')
-            or (secret[0] == '<' and secret[-1] == '>')
-            or (secret[0] == '$' and secret[1] == '{' and secret[-1] == '}')
-        ):
-            return True
-    except IndexError:
-        # Any one character secret (that causes this to raise an IndexError) is highly
-        # likely to be a false positive (or if a true positive, INCREDIBLY weak password).
-        return True
-
-    return False
+    pass
 
 
 def is_prefixed_with_dollar_sign(secret: str) -> bool:
@@ -164,7 +106,7 @@ def is_prefixed_with_dollar_sign(secret: str) -> bool:
     # false negatives than `is_templated_secret` (e.g. secrets that actually start with a $).
     # This is best used with files that actually use this as a means of referencing variables.
     # TODO: More intelligent filetype handling?
-    return bool(secret) and secret[0] == '$'
+    pass
 
 
 def is_indirect_reference(line: str) -> bool:
@@ -177,11 +119,7 @@ def is_indirect_reference(line: str) -> bool:
 
         secret = request.headers['apikey']
     """
-    # Constrain line length as the heuristic's intention is to target lines that resemble
-    # function calls. The constraint avoids catastrophic backtracking failures of the regex.
-    if len(line) > 1000:
-        return False
-    return bool(_get_indirect_reference_regex().search(line))
+    pass
 
 
 @lru_cache(maxsize=1)
@@ -197,24 +135,11 @@ def _get_indirect_reference_regex() -> Pattern:
     #       [^\v]*      ->  Something except line breaks
     #       [\]\)]      ->  End of indirect reference: ] or )
     #   )
-    return re.compile(r'([^\v=!:]*)\s*(:=?|[!=]{1,3})\s*([\w.-]+[\[\(][^\v]*[\]\)])')
+    pass
 
 
 def is_lock_file(filename: str) -> bool:
-    return os.path.basename(filename) in {
-        'Brewfile.lock.json',
-        'Cartfile.resolved',
-        'composer.lock',
-        'Gemfile.lock',
-        'Package.resolved',
-        'package-lock.json',
-        'Podfile.lock',
-        'yarn.lock',
-        'Pipfile.lock',
-        'poetry.lock',
-        'Cargo.lock',
-        'packages.lock.json',
-    }
+    pass
 
 
 def is_not_alphanumeric_string(secret: str) -> bool:
@@ -222,16 +147,16 @@ def is_not_alphanumeric_string(secret: str) -> bool:
     This assumes that secrets should have at least ONE letter in them.
     This helps avoid clear false positives, like `*****`.
     """
-    return not bool(set(string.ascii_letters) & set(secret))
+    pass
 
 
 def is_swagger_file(filename: str) -> bool:
     """
     Filters swagger files and paths, like swagger-ui.html or /swagger/.
     """
-    return bool(_get_swagger_regex().search(filename))
+    pass
 
 
 @lru_cache(maxsize=1)
 def _get_swagger_regex() -> Pattern:
-    return re.compile(r'.*swagger.*')
+    pass

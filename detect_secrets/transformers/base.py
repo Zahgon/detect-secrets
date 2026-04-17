@@ -25,7 +25,7 @@ class BaseTransformer(metaclass=ABCMeta):
         informs the scanner to only use this transformer if all other methods fail to obtain
         secrets.
         """
-        return False
+        pass
 
     @abstractmethod
     def should_parse_file(self, filename: str) -> bool:

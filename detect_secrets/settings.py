@@ -155,8 +155,7 @@ class Settings:
         }
 
     def set(self, other: 'Settings') -> None:
-        self.plugins = other.plugins
-        self.filters = other.filters
+        pass
 
     def configure_plugins(self, config: List[Dict[str, Any]]) -> 'Settings':
         """

@@ -58,12 +58,7 @@ def initialize(wordlist_filename: str, min_length: int = 3, file_hash: str = '')
 
 
 def should_exclude_secret(secret: str) -> bool:
-    try:
-        # .lower() to make everything case-insensitive
-        next(get_automaton().iter(string=secret.lower()))
-        return True
-    except StopIteration:
-        return False
+    pass
 
 
 @lru_cache(maxsize=1)

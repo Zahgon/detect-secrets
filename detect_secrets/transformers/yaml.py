@@ -220,27 +220,7 @@ class YAMLFileParser:
         parent: Optional[yaml.nodes.Node],
         index: Optional[yaml.nodes.Node],
     ) -> Optional[yaml.nodes.Node]:
-        line = (
-            self.loader.marks[-1].line
-            if self.is_inline_flow_mapping_key
-            else self.loader.line
-        )
-
-        node = yaml.composer.Composer.compose_node(self.loader, parent, index)  # type: ignore
-        if node is None:
-            return None
-
-        node.__line__ = line + 1    # type: ignore
-
-        if node.tag.endswith(':map'):
-            # Reset the inline flow mapping key when the end of a mapping is reached
-            # to avoid complications with empty mappings
-            self.is_inline_flow_mapping_key = False
-            return _tag_dict_values(cast(yaml.nodes.MappingNode, node))
-
-        # TODO: Not sure if need to do :seq
-
-        return node
+        pass
 
     def _parse_flow_mapping_key_shim(
         self,
@@ -254,38 +234,14 @@ class YAMLFileParser:
         # same line as the key
         # B) The n key of an inline dictionary that is followed by a FlowEntryToken (',') and
         # KeyToken ('key:')
-        is_inline_dictionary = (
-            first
-            and self.loader.marks[-1].line == self.loader.peek_token().start_mark.line
-            or self._check_next_tokens_shim(FlowEntryToken, KeyToken)
-        )
-
-        if is_inline_dictionary:
-            self.is_inline_flow_mapping_key = True
-        else:
-            self.is_inline_flow_mapping_key = False
-
-        return cast(yaml.nodes.Node, yaml.parser.Parser.parse_flow_mapping_key(self.loader, first))
+        pass
 
     def _check_next_tokens_shim(
         self,
         *choices: Any,
     ) -> bool:
         """Check the next tokens type match the argument list of token types."""
-        result = True
-        i = 0
-
-        if self.loader.tokens:
-            if not choices:
-                return result
-            for choice in choices:
-                if i < len(self.loader.tokens):
-                    result = result and isinstance(self.loader.tokens[i], choice)
-                    i += 1
-        else:
-            result = False
-
-        return result
+        pass
 
 
 def _tag_dict_values(map_node: yaml.nodes.MappingNode) -> yaml.nodes.MappingNode:
@@ -293,46 +249,7 @@ def _tag_dict_values(map_node: yaml.nodes.MappingNode) -> yaml.nodes.MappingNode
     :param map_node: It looks like map_node.value contains a list of
         pair tuples, corresponding to key,value pairs.
     """
-    new_values = []
-    for key, value in map_node.value:
-        if not (
-            value.tag.endswith(':str') or
-            value.tag.endswith(':binary')
-        ):
-            new_values.append((key, value))
-            continue
-
-        augmented_string = yaml.nodes.MappingNode(
-            tag=map_node.tag,
-            value=[
-                _create_key_value_pair_for_mapping_node_value(
-                    key='__value__',
-                    value=value.value,
-                    tag=value.tag,
-                ),
-                _create_key_value_pair_for_mapping_node_value(
-                    key='__line__',
-                    value=str(value.__line__),
-                    tag='tag:yaml.org,2002:int',
-                ),
-                _create_key_value_pair_for_mapping_node_value(
-                    key='__original_key__',
-                    value=key.value,
-                    tag='tag:yaml.org,2002:str',
-                ),
-            ],
-        )
-
-        new_values.append((key, augmented_string))
-
-    output = yaml.nodes.MappingNode(
-        tag=map_node.tag,
-        value=new_values,
-        start_mark=map_node.start_mark,
-        end_mark=map_node.end_mark,
-        flow_style=map_node.flow_style,
-    )
-    return output
+    pass
 
 
 def _create_key_value_pair_for_mapping_node_value(
@@ -340,13 +257,4 @@ def _create_key_value_pair_for_mapping_node_value(
     value: Any,
     tag: str,
 ) -> Tuple[yaml.nodes.ScalarNode, yaml.nodes.ScalarNode]:
-    return (
-        yaml.nodes.ScalarNode(
-            tag='tag:yaml.org,2002:str',
-            value=key,
-        ),
-        yaml.nodes.ScalarNode(
-            tag=tag,
-            value=value,
-        ),
-    )
+    pass
